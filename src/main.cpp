@@ -2,32 +2,47 @@
 
 using namespace std;
 
-struct Group {
+struct Group
+{
 	string name;
 	Team teams[4];
 };
 
-struct Team {
-	string name, code;
-	int pote, power, points;
+enum Bowl
+{
+	ONE = 1,
+	TWO = 2,
+	THREE = 3,
+	FOUR = 4,
 };
 
-enum Result {
+struct Team
+{
+	string name, code;
+	Bowl bowl;
+	int power, points;
+};
+
+enum Results
+{
 	TIE,
 	FIRST_TEAM_VICTORY,
 	SECOND_TEAM_VICTORY,
 };
 
-struct Game {
+struct Game
+{
 	Team teams[2];
+	Results result;
 	int goals;
-	Result result;
 };
 
-struct Cup {
+struct Cup
+{
 	Group groups[8];
 };
 
-int main() {
-  return 0;
+int main()
+{
+	return 0;
 }
