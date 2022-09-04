@@ -44,6 +44,12 @@ struct Cup
 	Team teams[32];
 };
 
+bool checkIfExistsCountry(string repeatedTeams[32], string country);
+int generateRandomNumber(int number);
+void draftGroups(Cup cup);
+void chooseTeam(Team &team, Team bowlTeam[8], string repeatedTeams[32]);
+void filterBowlTeam(Team teams[], Team (&bowlTeam)[8], Bowl bowl);
+
 int generateRandomNumber(int number)
 {
 	return rand() % number;
@@ -145,14 +151,6 @@ void draftGroups(Cup cup)
 			}
 
 			cup.groups[i].teams[j] = randomTeam;
-		}
-	}
-
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			cout << cup.groups[i].name << ": " << cup.groups[i].teams[j].name << endl;
 		}
 	}
 }
