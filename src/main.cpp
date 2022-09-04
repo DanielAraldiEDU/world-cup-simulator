@@ -20,7 +20,7 @@ struct Team
 
 struct Group
 {
-	string name;
+	char name;
 	Team teams[4];
 };
 
@@ -49,6 +49,29 @@ int generateRandomNumber(int number)
 	return rand() % number;
 }
 
+bool checkIfExistsCountry(string repeatedTeams[32], string country)
+{
+	for (int i = 0; i < 32; i++)
+	{
+		if (repeatedTeams[i] == country)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void chooseTeam(Team &team, Team bowlTeam[8], string repeatedTeams[32])
+{
+	team = bowlTeam[generateRandomNumber(8)];
+	bool alreadyExists = checkIfExistsCountry(repeatedTeams, team.name);
+	while (alreadyExists)
+	{
+		team = bowlTeam[generateRandomNumber(8)];
+		alreadyExists = checkIfExistsCountry(repeatedTeams, team.name);
+	}
+}
+
 void filterBowlTeam(Team teams[], Team (&bowlTeam)[8], Bowl bowl)
 {
 	int length = 0;
@@ -63,7 +86,7 @@ void filterBowlTeam(Team teams[], Team (&bowlTeam)[8], Bowl bowl)
 	}
 }
 
-void draftGroups(Cup &cup)
+void draftGroups(Cup cup)
 {
 	Team bowlOne[8], bowlTwo[8], bowlThree[8], bowlFour[8];
 
@@ -79,9 +102,48 @@ void draftGroups(Cup &cup)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			Team randomTeam = bowlOne[generateRandomNumber(8)];
-			repeatedTeams[repeatedTeamsLength] = randomTeam.name;
-			repeatedTeamsLength++;
+			Team randomTeam;
+			switch (j)
+			{
+			case 0:
+			{
+				chooseTeam(randomTeam, bowlOne, repeatedTeams);
+				repeatedTeams[repeatedTeamsLength] = randomTeam.name;
+				repeatedTeamsLength++;
+
+				break;
+			}
+			case 1:
+			{
+				chooseTeam(randomTeam, bowlTwo, repeatedTeams);
+				repeatedTeams[repeatedTeamsLength] = randomTeam.name;
+				repeatedTeamsLength++;
+
+				break;
+			}
+			case 2:
+			{
+				chooseTeam(randomTeam, bowlThree, repeatedTeams);
+				repeatedTeams[repeatedTeamsLength] = randomTeam.name;
+				repeatedTeamsLength++;
+
+				break;
+			}
+			case 3:
+			{
+				chooseTeam(randomTeam, bowlFour, repeatedTeams);
+				repeatedTeams[repeatedTeamsLength] = randomTeam.name;
+				repeatedTeamsLength++;
+
+				break;
+			}
+			default:
+			{
+				cout << "Ops! Algum erro aconteceu ao fazer o sorteio da copa!";
+				return;
+			}
+			}
+
 			cup.groups[i].teams[j] = randomTeam;
 		}
 	}
@@ -90,7 +152,7 @@ void draftGroups(Cup &cup)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			cout << cup.groups[i].teams[j].name << endl;
+			cout << cup.groups[i].name << ": " << cup.groups[i].teams[j].name << endl;
 		}
 	}
 }
@@ -100,14 +162,14 @@ int main()
 	srand(time(NULL));
 
 	Cup cup = {
-			{{"A", {}},
-			 {"B", {}},
-			 {"C", {}},
-			 {"D", {}},
-			 {"E", {}},
-			 {"F", {}},
-			 {"G", {}},
-			 {"H", {}}},
+			{{'A', {}},
+			 {'B', {}},
+			 {'C', {}},
+			 {'D', {}},
+			 {'E', {}},
+			 {'F', {}},
+			 {'G', {}},
+			 {'H', {}}},
 			{{"Catar", Bowl::ONE, 30, 0},
 			 {"Equador", Bowl::TWO, 35, 0},
 			 {"Senegal", Bowl::FOUR, 20, 0},
@@ -139,7 +201,7 @@ int main()
 			 {"Portugal", Bowl::ONE, 76, 0},
 			 {"Gana", Bowl::FOUR, 54, 0},
 			 {"Uruguai", Bowl::TWO, 60, 0},
-			 {"Coreia do Sul", Bowl::THREE, 42, 0}},
+			 {"Córeia do Sul", Bowl::THREE, 42, 0}},
 	};
 
 	draftGroups(cup);
