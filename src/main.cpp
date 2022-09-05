@@ -27,8 +27,8 @@ struct Group
 enum Results
 {
 	TIE,
-	FIRST_TEAM_VICTORY,
-	SECOND_TEAM_VICTORY,
+	VICTORY_IN_FIRST_HALF,
+	VICTORY_IN_SECOND_HALF,
 };
 
 struct Game
@@ -45,6 +45,7 @@ struct Cup
 };
 
 bool checkIfExistsCountry(string repeatedTeams[32], string country);
+Game simulateGame(Team firstTeam, Team secondTeam);
 int generateRandomNumber(int number);
 void draftGroups(Cup cup);
 void chooseTeam(Team &team, Team bowlTeam[8], string repeatedTeams[32]);
@@ -65,6 +66,38 @@ bool checkIfExistsCountry(string repeatedTeams[32], string country)
 		}
 	}
 	return false;
+}
+
+Game simulateGame(Team firstTeam, Team secondTeam)
+{
+	int victoryInHalf = generateRandomNumber(2);
+	int firstTeamPower = generateRandomNumber(firstTeam.power);
+	int secondTeamPower = generateRandomNumber(secondTeam.power);
+
+	if (firstTeamPower > secondTeamPower)
+	{
+		firstTeam.points++;
+	}
+	else if (firstTeamPower < secondTeamPower)
+	{
+		secondTeam.points++;
+	}
+	else
+	{
+		cout << firstTeam.name << " - " << firstTeam.points << " | EMPATOU | " << secondTeam.points << " - " << secondTeam.name;
+		return {{firstTeam, secondTeam}, Results::TIE, firstTeam.points, secondTeam.points};
+	}
+
+	if (victoryInHalf)
+	{
+		cout << firstTeam.name << " - " << firstTeam.points << " | GANHOU NO SEGUNDO TEMPO | " << secondTeam.points << " - " << secondTeam.name;
+		return {{firstTeam, secondTeam}, Results::VICTORY_IN_SECOND_HALF, firstTeam.points, secondTeam.points};
+	}
+	else
+	{
+		cout << firstTeam.name << " - " << firstTeam.points << " | GANHOU NO PRIMEIRO TEMPO | " << secondTeam.points << " - " << secondTeam.name;
+		return {{firstTeam, secondTeam}, Results::VICTORY_IN_FIRST_HALF, firstTeam.points, secondTeam.points};
+	}
 }
 
 void chooseTeam(Team &team, Team bowlTeam[8], string repeatedTeams[32])
@@ -114,33 +147,21 @@ void draftGroups(Cup cup)
 			case 0:
 			{
 				chooseTeam(randomTeam, bowlOne, repeatedTeams);
-				repeatedTeams[repeatedTeamsLength] = randomTeam.name;
-				repeatedTeamsLength++;
-
 				break;
 			}
 			case 1:
 			{
 				chooseTeam(randomTeam, bowlTwo, repeatedTeams);
-				repeatedTeams[repeatedTeamsLength] = randomTeam.name;
-				repeatedTeamsLength++;
-
 				break;
 			}
 			case 2:
 			{
 				chooseTeam(randomTeam, bowlThree, repeatedTeams);
-				repeatedTeams[repeatedTeamsLength] = randomTeam.name;
-				repeatedTeamsLength++;
-
 				break;
 			}
 			case 3:
 			{
 				chooseTeam(randomTeam, bowlFour, repeatedTeams);
-				repeatedTeams[repeatedTeamsLength] = randomTeam.name;
-				repeatedTeamsLength++;
-
 				break;
 			}
 			default:
@@ -149,6 +170,9 @@ void draftGroups(Cup cup)
 				return;
 			}
 			}
+
+			repeatedTeams[repeatedTeamsLength] = randomTeam.name;
+			repeatedTeamsLength++;
 
 			cup.groups[i].teams[j] = randomTeam;
 		}
