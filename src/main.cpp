@@ -47,9 +47,10 @@ struct Cup
 bool checkIfExistsCountry(string repeatedTeams[32], string country);
 Game simulateGame(Team firstTeam, Team secondTeam);
 int generateRandomNumber(int number);
-void draftGroups(Cup cup);
+void draftGroups(Cup &cup);
 void chooseTeam(Team &team, Team bowlTeam[8], string repeatedTeams[32]);
 void filterBowlTeam(Team teams[], Team (&bowlTeam)[8], Bowl bowl);
+void simulateGroup(Group &group);
 
 int generateRandomNumber(int number)
 {
@@ -70,33 +71,38 @@ bool checkIfExistsCountry(string repeatedTeams[32], string country)
 
 Game simulateGame(Team firstTeam, Team secondTeam)
 {
+	int firstTeamGoals = 0, secondTeamGoals = 0;
 	int victoryInHalf = generateRandomNumber(2);
 	int firstTeamPower = generateRandomNumber(firstTeam.power);
 	int secondTeamPower = generateRandomNumber(secondTeam.power);
 
 	if (firstTeamPower > secondTeamPower)
 	{
-		firstTeam.points++;
+		firstTeamGoals++;
+		firstTeam.points += 3;
 	}
 	else if (firstTeamPower < secondTeamPower)
 	{
-		secondTeam.points++;
+		secondTeamGoals++;
+		secondTeam.points += 3;
 	}
 	else
 	{
-		cout << firstTeam.name << " - " << firstTeam.points << " | EMPATOU | " << secondTeam.points << " - " << secondTeam.name;
-		return {{firstTeam, secondTeam}, Results::TIE, firstTeam.points, secondTeam.points};
+		firstTeam.points++;
+		secondTeam.points++;
+		cout << firstTeam.name << " - " << firstTeamGoals << " | EMPATOU | " << secondTeamGoals << " - " << secondTeam.name << endl;
+		return {{firstTeam, secondTeam}, Results::TIE, firstTeamGoals, secondTeamGoals};
 	}
 
 	if (victoryInHalf)
 	{
-		cout << firstTeam.name << " - " << firstTeam.points << " | GANHOU NO SEGUNDO TEMPO | " << secondTeam.points << " - " << secondTeam.name;
-		return {{firstTeam, secondTeam}, Results::VICTORY_IN_SECOND_HALF, firstTeam.points, secondTeam.points};
+		cout << firstTeam.name << " - " << firstTeamGoals << " | GANHOU NO SEGUNDO TEMPO | " << secondTeamGoals << " - " << secondTeam.name << endl;
+		return {{firstTeam, secondTeam}, Results::VICTORY_IN_SECOND_HALF, firstTeamGoals, secondTeamGoals};
 	}
 	else
 	{
-		cout << firstTeam.name << " - " << firstTeam.points << " | GANHOU NO PRIMEIRO TEMPO | " << secondTeam.points << " - " << secondTeam.name;
-		return {{firstTeam, secondTeam}, Results::VICTORY_IN_FIRST_HALF, firstTeam.points, secondTeam.points};
+		cout << firstTeam.name << " - " << firstTeamGoals << " | GANHOU NO PRIMEIRO TEMPO | " << secondTeamGoals << " - " << secondTeam.name << endl;
+		return {{firstTeam, secondTeam}, Results::VICTORY_IN_FIRST_HALF, firstTeamGoals, secondTeamGoals};
 	}
 }
 
@@ -125,7 +131,7 @@ void filterBowlTeam(Team teams[], Team (&bowlTeam)[8], Bowl bowl)
 	}
 }
 
-void draftGroups(Cup cup)
+void draftGroups(Cup &cup)
 {
 	Team bowlOne[8], bowlTwo[8], bowlThree[8], bowlFour[8];
 
@@ -179,6 +185,25 @@ void draftGroups(Cup cup)
 	}
 }
 
+void simulateGroup(Group &group)
+{
+	int currentTeamIndex = 0, setCurrectTeamIndex = 0, adversaryTeamIndex = 1, adversaryAuxiliarTeamIndex = 2, currectTeamLimitIndex = 3;
+	while (currentTeamIndex < 3)
+	{
+		simulateGame(group.teams[currentTeamIndex], group.teams[adversaryTeamIndex]);
+		adversaryTeamIndex++;
+		setCurrectTeamIndex++;
+		if (setCurrectTeamIndex == currectTeamLimitIndex)
+		{
+			currentTeamIndex++;
+			currectTeamLimitIndex--;
+			setCurrectTeamIndex = 0;
+			adversaryTeamIndex = adversaryAuxiliarTeamIndex;
+			adversaryAuxiliarTeamIndex++;
+		}
+	}
+}
+
 int main()
 {
 	srand(time(NULL));
@@ -227,6 +252,7 @@ int main()
 	};
 
 	draftGroups(cup);
+	simulateGroup(cup.groups[0]);
 
 	return 0;
 }
