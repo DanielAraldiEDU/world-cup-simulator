@@ -120,7 +120,6 @@ void chooseTeam(Team &team, Team bowlTeam[8], string repeatedTeams[32])
 void filterBowlTeam(Team teams[], Team (&bowlTeam)[8], Bowl bowl)
 {
 	int length = 0;
-
 	for (int i = 0; i < 32; i++)
 	{
 		if (teams[i].bowl == bowl)
@@ -190,7 +189,10 @@ void simulateGroup(Group &group)
 	int currentTeamIndex = 0, setCurrectTeamIndex = 0, adversaryTeamIndex = 1, adversaryAuxiliarTeamIndex = 2, currectTeamLimitIndex = 3;
 	while (currentTeamIndex < 3)
 	{
-		simulateGame(group.teams[currentTeamIndex], group.teams[adversaryTeamIndex]);
+		Game game = simulateGame(group.teams[currentTeamIndex], group.teams[adversaryTeamIndex]);
+		group.teams[currentTeamIndex].points = game.teams[0].points;
+		group.teams[adversaryTeamIndex].points = game.teams[1].points;
+
 		adversaryTeamIndex++;
 		setCurrectTeamIndex++;
 		if (setCurrectTeamIndex == currectTeamLimitIndex)
@@ -252,7 +254,6 @@ int main()
 	};
 
 	draftGroups(cup);
-	simulateGroup(cup.groups[0]);
 
 	return 0;
 }
