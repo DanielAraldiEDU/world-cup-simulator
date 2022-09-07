@@ -44,6 +44,12 @@ struct Cup
 	Team teams[32];
 };
 
+struct GameResultMessage
+{
+	string firstTeamName, secondTeamName, gameMessage;
+	int firstTeamGoals, secondTeamGoals;
+};
+
 bool checkIfCountryExists(string repeatedTeams[32], string country);
 Game simulateGame(Team firstTeam, Team secondTeam);
 int generateRandomNumber(int number);
@@ -53,12 +59,18 @@ void filterBowlTeam(Team teams[], Team (&bowlTeam)[8], Bowl bowl);
 void simulateCup(Cup cup);
 void simulateGroup(Group &group);
 void simulatePlayoffs(Group groups[8]);
+void showGameResult(GameResultMessage gameResultMessage);
 Team getTeamWithHighestPoints(Team teams[4]);
 Team getSecondTeamWithHighestPoints(Team teams[4], string invalidTeamName);
 
 int generateRandomNumber(int number)
 {
 	return rand() % number;
+}
+
+void showGameResult(GameResultMessage gameResultMessage)
+{
+	cout << gameResultMessage.firstTeamName << " - " << gameResultMessage.firstTeamGoals << " | " << gameResultMessage.gameMessage << " | " << gameResultMessage.secondTeamGoals << " - " << gameResultMessage.secondTeamName << endl;
 }
 
 bool checkIfCountryExists(string repeatedTeams[32], string country)
@@ -94,18 +106,18 @@ Game simulateGame(Team firstTeam, Team secondTeam)
 	{
 		firstTeam.points++;
 		secondTeam.points++;
-		cout << firstTeam.name << " - " << firstTeamGoals << " | EMPATOU | " << secondTeamGoals << " - " << secondTeam.name << endl;
+		showGameResult({firstTeam.name, secondTeam.name, "EMPATOU", firstTeamGoals, secondTeamGoals});
 		return {{firstTeam, secondTeam}, Results::TIE, firstTeamGoals, secondTeamGoals};
 	}
 
 	if (victoryInHalf)
 	{
-		cout << firstTeam.name << " - " << firstTeamGoals << " | FEZ O GOL NO SEGUNDO TEMPO | " << secondTeamGoals << " - " << secondTeam.name << endl;
+		showGameResult({firstTeam.name, secondTeam.name, "FEZ O GOL NO SEGUNDO TEMPO", firstTeamGoals, secondTeamGoals});
 		return {{firstTeam, secondTeam}, Results::VICTORY_IN_SECOND_HALF, firstTeamGoals, secondTeamGoals};
 	}
 	else
 	{
-		cout << firstTeam.name << " - " << firstTeamGoals << " | FEZ O GOL NO PRIMEIRO TEMPO | " << secondTeamGoals << " - " << secondTeam.name << endl;
+		showGameResult({firstTeam.name, secondTeam.name, "FEZ O GOL NO PRIMEIRO TEMPO", firstTeamGoals, secondTeamGoals});
 		return {{firstTeam, secondTeam}, Results::VICTORY_IN_FIRST_HALF, firstTeamGoals, secondTeamGoals};
 	}
 }
