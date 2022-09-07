@@ -44,7 +44,7 @@ struct Cup
 	Team teams[32];
 };
 
-bool checkIfExistsCountry(string repeatedTeams[32], string country);
+bool checkIfCountryExists(string repeatedTeams[32], string country);
 Game simulateGame(Team firstTeam, Team secondTeam);
 int generateRandomNumber(int number);
 void draftGroups(Cup &cup);
@@ -53,13 +53,15 @@ void filterBowlTeam(Team teams[], Team (&bowlTeam)[8], Bowl bowl);
 void simulateCup(Cup cup);
 void simulateGroup(Group &group);
 void simulatePlayoffs(Group groups[8]);
+Team getTeamWithHighestPoints(Team teams[4]);
+Team getSecondTeamWithHighestPoints(Team teams[4], string invalidTeamName);
 
 int generateRandomNumber(int number)
 {
 	return rand() % number;
 }
 
-bool checkIfExistsCountry(string repeatedTeams[32], string country)
+bool checkIfCountryExists(string repeatedTeams[32], string country)
 {
 	for (int i = 0; i < 32; i++)
 	{
@@ -111,11 +113,11 @@ Game simulateGame(Team firstTeam, Team secondTeam)
 void chooseTeam(Team &team, Team bowlTeam[8], string repeatedTeams[32])
 {
 	team = bowlTeam[generateRandomNumber(8)];
-	bool alreadyExists = checkIfExistsCountry(repeatedTeams, team.name);
+	bool alreadyExists = checkIfCountryExists(repeatedTeams, team.name);
 	while (alreadyExists)
 	{
 		team = bowlTeam[generateRandomNumber(8)];
-		alreadyExists = checkIfExistsCountry(repeatedTeams, team.name);
+		alreadyExists = checkIfCountryExists(repeatedTeams, team.name);
 	}
 }
 
@@ -209,6 +211,48 @@ void simulateGroup(Group &group)
 
 void simulatePlayoffs(Group groups[8])
 {
+	cout << endl;
+	for (int i = 0; i < 8; i++)
+	{
+		Team highestTeamPoint = getTeamWithHighestPoints(groups[i].teams);
+		Team secondHighestTeamPoint = getSecondTeamWithHighestPoints(groups[i].teams, highestTeamPoint.name);
+
+		cout << "Times classificados do Grupo " << groups[i].name << ": " << highestTeamPoint.name << " (" << highestTeamPoint.points << (highestTeamPoint.points == 1 ? " Ponto) e " : " Pontos) e ") << secondHighestTeamPoint.name << " (" << secondHighestTeamPoint.points << (secondHighestTeamPoint.points == 1 ? " Ponto)" : " Pontos)") << endl;
+	}
+}
+
+Team getTeamWithHighestPoints(Team teams[4])
+{
+	Team highestTeamPoint;
+	int highestPoints = 0;
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (teams[i].points > highestPoints)
+		{
+			highestPoints = teams[i].points;
+			highestTeamPoint = teams[i];
+		}
+	}
+
+	return highestTeamPoint;
+}
+
+Team getSecondTeamWithHighestPoints(Team teams[4], string invalidTeamName)
+{
+	Team highestTeamPoint;
+	int highestPoints = 0;
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (teams[i].points > highestPoints && teams[i].name != invalidTeamName)
+		{
+			highestPoints = teams[i].points;
+			highestTeamPoint = teams[i];
+		}
+	}
+
+	return highestTeamPoint;
 }
 
 void simulateCup(Cup cup)
@@ -219,6 +263,8 @@ void simulateCup(Cup cup)
 	{
 		simulateGroup(cup.groups[i]);
 	}
+
+	simulatePlayoffs(cup.groups);
 }
 
 int main()
