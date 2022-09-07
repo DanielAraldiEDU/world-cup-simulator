@@ -221,18 +221,6 @@ void simulateGroup(Group &group)
 	}
 }
 
-void simulatePlayoffs(Group groups[8])
-{
-	cout << endl;
-	for (int i = 0; i < 8; i++)
-	{
-		Team highestTeamPoint = getTeamWithHighestPoints(groups[i].teams);
-		Team secondHighestTeamPoint = getSecondTeamWithHighestPoints(groups[i].teams, highestTeamPoint.name);
-
-		cout << "Times classificados do Grupo " << groups[i].name << ": 1º " << highestTeamPoint.name << " (" << highestTeamPoint.points << (highestTeamPoint.points == 1 ? " Ponto) e " : " Pontos) e 2º ") << secondHighestTeamPoint.name << " (" << secondHighestTeamPoint.points << (secondHighestTeamPoint.points == 1 ? " Ponto)" : " Pontos)") << endl;
-	}
-}
-
 Team getTeamWithHighestPoints(Team teams[4])
 {
 	Team highestTeamPoint;
@@ -266,6 +254,19 @@ Team getSecondTeamWithHighestPoints(Team teams[4], string invalidTeamName)
 
 	return highestTeamPoint;
 }
+
+void simulatePlayoffs(Group groups[8])
+{
+	cout << endl;
+	for (int i = 0; i < 8; i++)
+	{
+		Team highestTeamPoint = getTeamWithHighestPoints(groups[i].teams);
+		Team secondHighestTeamPoint = getSecondTeamWithHighestPoints(groups[i].teams, highestTeamPoint.name);
+
+		cout << "Times classificados do Grupo " << groups[i].name << ": 1º " << highestTeamPoint.name << " (" << highestTeamPoint.points << (highestTeamPoint.points == 1 ? " Ponto) e " : " Pontos) e 2º ") << secondHighestTeamPoint.name << " (" << secondHighestTeamPoint.points << (secondHighestTeamPoint.points == 1 ? " Ponto)" : " Pontos)") << endl;
+	}
+}
+
 
 void simulateCup(Cup cup)
 {
