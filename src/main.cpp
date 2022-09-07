@@ -50,7 +50,9 @@ int generateRandomNumber(int number);
 void draftGroups(Cup &cup);
 void chooseTeam(Team &team, Team bowlTeam[8], string repeatedTeams[32]);
 void filterBowlTeam(Team teams[], Team (&bowlTeam)[8], Bowl bowl);
+void simulateCup(Cup cup);
 void simulateGroup(Group &group);
+void simulatePlayoffs(Group groups[8]);
 
 int generateRandomNumber(int number)
 {
@@ -96,12 +98,12 @@ Game simulateGame(Team firstTeam, Team secondTeam)
 
 	if (victoryInHalf)
 	{
-		cout << firstTeam.name << " - " << firstTeamGoals << " | GANHOU NO SEGUNDO TEMPO | " << secondTeamGoals << " - " << secondTeam.name << endl;
+		cout << firstTeam.name << " - " << firstTeamGoals << " | FEZ O GOL NO SEGUNDO TEMPO | " << secondTeamGoals << " - " << secondTeam.name << endl;
 		return {{firstTeam, secondTeam}, Results::VICTORY_IN_SECOND_HALF, firstTeamGoals, secondTeamGoals};
 	}
 	else
 	{
-		cout << firstTeam.name << " - " << firstTeamGoals << " | GANHOU NO PRIMEIRO TEMPO | " << secondTeamGoals << " - " << secondTeam.name << endl;
+		cout << firstTeam.name << " - " << firstTeamGoals << " | FEZ O GOL NO PRIMEIRO TEMPO | " << secondTeamGoals << " - " << secondTeam.name << endl;
 		return {{firstTeam, secondTeam}, Results::VICTORY_IN_FIRST_HALF, firstTeamGoals, secondTeamGoals};
 	}
 }
@@ -132,15 +134,14 @@ void filterBowlTeam(Team teams[], Team (&bowlTeam)[8], Bowl bowl)
 
 void draftGroups(Cup &cup)
 {
+	int repeatedTeamsLength = 0;
+	string repeatedTeams[32];
 	Team bowlOne[8], bowlTwo[8], bowlThree[8], bowlFour[8];
 
 	filterBowlTeam(cup.teams, bowlOne, Bowl::ONE);
 	filterBowlTeam(cup.teams, bowlTwo, Bowl::TWO);
 	filterBowlTeam(cup.teams, bowlThree, Bowl::THREE);
 	filterBowlTeam(cup.teams, bowlFour, Bowl::FOUR);
-
-	string repeatedTeams[32];
-	int repeatedTeamsLength = 0;
 
 	for (int i = 0; i < 8; i++)
 	{
@@ -206,6 +207,20 @@ void simulateGroup(Group &group)
 	}
 }
 
+void simulatePlayoffs(Group groups[8])
+{
+}
+
+void simulateCup(Cup cup)
+{
+	draftGroups(cup);
+
+	for (int i = 0; i < 8; i++)
+	{
+		simulateGroup(cup.groups[i]);
+	}
+}
+
 int main()
 {
 	srand(time(NULL));
@@ -253,7 +268,7 @@ int main()
 			 {"Córeia do Sul", Bowl::THREE, 42, 0}},
 	};
 
-	draftGroups(cup);
+	simulateCup(cup);
 
 	return 0;
 }
