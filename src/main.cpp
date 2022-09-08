@@ -267,7 +267,6 @@ void simulatePlayoffs(Group groups[8])
 	}
 }
 
-
 void simulateCup(Cup cup)
 {
 	draftGroups(cup);
